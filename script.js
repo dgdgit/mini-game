@@ -75,11 +75,14 @@ function playRandomNumber() {
     }, 80);
 }
 
-// ==================== GAME 2: BỐC THĂM ====================
+// ==================== GAME 2: BỐC THĂM (GRID VERSION) ====================
 $(document).ready(function() {
     let giftList = getCookie("giftList");
-    if(!giftList) giftList = "Xe máy SH\niPhone 15 Pro\nVoucher 500k\nChúc bạn may mắn";
+    if(!giftList) giftList = "Xe máy SH\niPhone 15 Pro\nVoucher 500k\nChúc bạn may mắn\nTai nghe Airpod\nBút bi cao cấp\nSổ tay";
     $('#txtGiftList').val(giftList);
+    
+    // Tạo lưới quà ngay khi load trang
+    renderLuckyGrid();
 });
 
 function toggleSettings(id) {
@@ -89,36 +92,84 @@ function toggleSettings(id) {
 function saveGiftSettings() {
     let list = $('#txtGiftList').val();
     setCookie("giftList", list, 30);
-    alert("Đã lưu danh sách quà!");
+    renderLuckyGrid(); // Vẽ lại lưới sau khi lưu
+    alert("Đã cập nhật danh sách quà!");
     toggleSettings('box-settings');
 }
 
-function playLuckyDraw() {
+function renderLuckyGrid() {
     let listStr = $('#txtGiftList').val();
+    // Lọc bỏ dòng trống
     let items = listStr.split('\n').filter(item => item.trim() !== "");
     
-    if(items.length === 0) { alert("Hết quà rồi!"); return; }
+    // Giới hạn tối đa 99 hộp
+    if(items.length > 99) {
+        items = items.slice(0, 99);
+        alert("Hệ thống giới hạn hiển thị tối đa 99 hộp quà!");
+    }
 
-    // Hiệu ứng rung hộp quà
-    $('.lucky-icon').css('animation', 'none');
-    setTimeout(() => $('.lucky-icon').css('animation', 'bounce 0.5s infinite'), 10);
+    $('#gift-count-label').text(`Đang có ${items.length} hộp quà bí mật`);
+    let gridHtml = '';
 
-    // Xử lý kết quả sau 1.5s
-    setTimeout(() => {
-        let randomIndex = Math.floor(Math.random() * items.length);
-        let result = items[randomIndex];
-        showModal(result);
+    // Tạo HTML cho từng hộp
+    items.forEach((item, index) => {
+        gridHtml += `
+            <div class="lucky-item" id="box-${index}" onclick="openBox(${index})">
+                <i class="fa-solid fa-gift"></i>
+                <span>Hộp ${index + 1}</span>
+            </div>
+        `;
+    });
+
+    $('#lucky-grid').html(gridHtml);
+}
+
+function openBox(index) {
+    // Kiểm tra xem hộp đã mở chưa
+    if ($(`#box-${index}`).hasClass('opened')) return;
+
+    // Lấy danh sách quà hiện tại từ input (để đảm bảo đồng bộ)
+    let listStr = $('#txtGiftList').val();
+    let items = listStr.split('\n').filter(item => item.trim() !== "");
+
+    if (items.length === 0) {
+        alert("Hết quà rồi!");
+        return;
+    }
+
+    // --- LOGIC CHỌN QUÀ NGẪU NHIÊN ---
+    // Khi bấm vào 1 hộp bất kỳ, hệ thống sẽ chọn ngẫu nhiên 1 món quà trong danh sách còn lại
+    // Điều này giúp người chơi không thể "soi" code để biết hộp nào chứa gì trước khi bấm.
+    let randomGiftIndex = Math.floor(Math.random() * items.length);
+    let prizeName = items[randomGiftIndex];
+
+    // Hiệu ứng mở hộp
+    let box = $(`#box-${index}`);
+    box.find('i').attr('class', 'fa-solid fa-box-open'); // Đổi icon thành hộp mở
+    box.addClass('opened'); // Thêm class đã mở (xám màu)
+
+    // Hiển thị kết quả
+    showModal(prizeName);
+
+    // Xử lý nếu chọn "Loại bỏ quà sau khi trúng"
+    if ($('#chkRemoveGift').is(':checked')) {
+        // Xóa món quà vừa trúng khỏi danh sách text
+        items.splice(randomGiftIndex, 1);
         
-        $('.lucky-icon').css('animation', 'bounce 2s infinite'); // Trả lại animation chậm
+        // Cập nhật lại textarea và cookie
+        let newList = items.join('\n');
+        $('#txtGiftList').val(newList);
+        setCookie("giftList", newList, 30);
+        
+        // Cập nhật lại số lượng hiển thị
+        $('#gift-count-label').text(`Đang có ${items.length} hộp quà bí mật`);
+    }
+}
 
-        // Nếu chọn xóa quà đã bốc
-        if($('#chkRemoveGift').is(':checked')) {
-            items.splice(randomIndex, 1);
-            let newList = items.join('\n');
-            $('#txtGiftList').val(newList);
-            setCookie("giftList", newList, 30); // Cập nhật cookie luôn
-        }
-    }, 1500);
+function resetLuckyGrid() {
+    if(confirm("Bạn có muốn sắp xếp lại các hộp quà không?")) {
+        renderLuckyGrid();
+    }
 }
 
 // ==================== GAME 3: VÒNG QUAY (CORE LOGIC) ====================
