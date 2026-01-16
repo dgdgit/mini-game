@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Game May Mắn - XSpin Lite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <div class="main-container">
+        <header>
+            <h1><i class="fa-solid fa-gamepad"></i> CỔNG GAME MAY MẮN</h1>
+            <p>Công cụ tổ chức sự kiện, mini-game chuyên nghiệp</p>
+        </header>
+
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="openGame('game-random')">
+                <i class="fa-solid fa-arrow-down-9-1"></i> Quay Số
+            </button>
+            <button class="tab-btn" onclick="openGame('game-box')">
+                <i class="fa-solid fa-gift"></i> Bốc Thăm
+            </button>
+            <button class="tab-btn" onclick="openGame('game-wheel')">
+                <i class="fa-solid fa-dharmachakra"></i> Vòng Quay
+            </button>
+        </div>
+
+        <div id="game-random" class="tab-content active">
+            <div class="game-card">
+                <h2><i class="fa-solid fa-shuffle"></i> Quay Số Ngẫu Nhiên</h2>
+                <div class="result-box">
+                    <span id="random-result">00</span>
+                </div>
+                <div class="settings-area">
+                    <div class="input-group">
+                        <label>Từ số:</label>
+                        <input type="number" id="minNum" value="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Đến số:</label>
+                        <input type="number" id="maxNum" value="100">
+                    </div>
+                </div>
+                <button class="btn-play pulse-animation" onclick="playRandomNumber()">QUAY NGAY</button>
+            </div>
+        </div>
+
+        <div id="game-box" class="tab-content" style="display:none">
+            <div class="game-card">
+                <h2><i class="fa-solid fa-box-open"></i> Bốc Thăm Trúng Thưởng</h2>
+                
+                <div class="lucky-box-container" onclick="playLuckyDraw()">
+                    <i class="fa-solid fa-gift lucky-icon"></i>
+                    <p>Nhấn vào hộp quà để bốc thăm</p>
+                </div>
+                
+                <div class="control-row">
+                    <button class="btn-settings" onclick="toggleSettings('box-settings')"><i class="fa-solid fa-gear"></i> Cài đặt quà</button>
+                </div>
+
+                <div id="box-settings" class="settings-panel hidden">
+                    <textarea id="txtGiftList" placeholder="Nhập tên quà, mỗi món 1 dòng..."></textarea>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="chkRemoveGift">
+                        <label for="chkRemoveGift">Loại bỏ quà sau khi trúng</label>
+                    </div>
+                    <button class="btn-save" onclick="saveGiftSettings()">Lưu Cài Đặt</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-wheel" class="tab-content" style="display:none">
+            <div class="game-card wheel-layout">
+                <div class="wheel-container">
+                    <div class="pointer"><i class="fa-solid fa-sort-down"></i></div>
+                    <canvas id="wheel" width="400" height="400"></canvas>
+                    <button id="spin-btn">QUAY</button>
+                </div>
+                
+                <div class="wheel-controls">
+                    <h3>Cấu hình vòng quay</h3>
+                    <textarea id="txtWheelItems" placeholder="Nhập tên phần thưởng, mỗi dòng 1 cái..."></textarea>
+                    <button class="btn-save" onclick="initWheelFromInput()">Cập nhật vòng quay</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modal-result" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="congrats-icon"><i class="fa-solid fa-trophy"></i></div>
+            <h3>CHÚC MỪNG!</h3>
+            <p id="modal-text">Bạn đã trúng thưởng</p>
+            <div id="confetti-canvas"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 DGD Minigame Portal.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
