@@ -311,3 +311,26 @@ textarea {
     cursor: pointer;
     margin-left: 10px;
 }
+
+/* --- CSS CHO LOGO --- */
+.logo-container {
+    margin-bottom: 15px; /* Khoảng cách giữa logo và tiêu đề */
+}
+
+.site-logo {
+    height: 60px; /* Chiều cao cố định để logo gọn gàng */
+    width: auto;  /* Chiều rộng tự động theo tỉ lệ */
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.site-logo:hover {
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột vào */
+}
+
+/* Điều chỉnh logo nhỏ hơn một chút trên điện thoại */
+@media (max-width: 768px) {
+    .site-logo {
+        height: 50px;
+    }
+}
