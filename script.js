@@ -1,9 +1,8 @@
-// ==================== CẤU HÌNH CHUNG & COOKIES ====================
+// ==================== 1. CẤU HÌNH & TIỆN ÍCH ====================
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();
-    // Mã hóa nội dung (đặc biệt là xuống dòng) để tránh lỗi cookie
     document.cookie = cname + "=" + encodeURIComponent(cvalue) + ";" + expires + ";path=/";
 }
 
@@ -21,43 +20,60 @@ function getCookie(cname) {
 function showModal(text) {
     document.getElementById('modal-text').innerText = text;
     document.getElementById('modal-result').style.display = "block";
-    // Có thể thêm âm thanh winner ở đây
 }
 
 function closeModal() {
     document.getElementById('modal-result').style.display = "none";
 }
 
-// ==================== TAB NAVIGATION ====================
+// ==================== 2. KHỞI TẠO GAME (CHẠY KHI WEB LOAD XONG) ====================
+$(document).ready(function() {
+    console.log("Website đã tải xong. Bắt đầu khởi tạo game...");
+
+    // --- GAME 1: Quay Số ---
+    let min = getCookie("minNum");
+    let max = getCookie("maxNum");
+    if(min) $('#minNum').val(min);
+    if(max) $('#maxNum').val(max);
+
+    // --- GAME 2: Bốc Thăm (QUAN TRỌNG) ---
+    let giftList = getCookie("giftList");
+    if(!giftList) giftList = "Xe máy SH\niPhone 15 Pro\nVoucher 500k\nChúc bạn may mắn\nTai nghe Airpod\nBút bi cao cấp\nSổ tay";
+    $('#txtGiftList').val(giftList);
+    
+    // Gọi hàm tạo hộp quà ngay lập tức
+    renderLuckyGrid();
+
+    // --- GAME 3: Vòng Quay ---
+    let wheelData = getCookie("wheelItems");
+    if(!wheelData) wheelData = "10k\n20k\n50k\n100k\nChúc may mắn\nThêm lượt";
+    $('#txtWheelItems').val(wheelData);
+    initWheelFromInput();
+});
+
+// ==================== 3. LOGIC XỬ LÝ TAB ====================
 function openGame(gameId) {
     $('.tab-content').hide();
     $('.tab-btn').removeClass('active');
     
     $('#' + gameId).fadeIn();
-    // Tìm nút bấm tương ứng để active
+    
+    // Active nút bấm
     const buttons = document.querySelectorAll('.tab-btn');
     if(gameId == 'game-random') buttons[0].classList.add('active');
     if(gameId == 'game-box') buttons[1].classList.add('active');
     if(gameId == 'game-wheel') {
         buttons[2].classList.add('active');
-        initWheel(); // Vẽ lại vòng quay khi mở tab để tránh lỗi kích thước
+        // Vẽ lại vòng quay để tránh lỗi hiển thị khi ẩn/hiện
+        setTimeout(initWheel, 100); 
     }
 }
 
-// ==================== GAME 1: QUAY SỐ ====================
-$(document).ready(function() {
-    // Load setting từ cookie
-    let min = getCookie("minNum");
-    let max = getCookie("maxNum");
-    if(min) $('#minNum').val(min);
-    if(max) $('#maxNum').val(max);
-});
-
+// ==================== 4. LOGIC GAME 1: QUAY SỐ ====================
 function playRandomNumber() {
     let min = parseInt($('#minNum').val());
     let max = parseInt($('#maxNum').val());
     
-    // Lưu cookie
     setCookie("minNum", min, 30);
     setCookie("maxNum", max, 30);
 
@@ -68,23 +84,14 @@ function playRandomNumber() {
         let rand = Math.floor(Math.random() * (max - min + 1)) + min;
         $('#random-result').text(rand);
         count++;
-        if(count > 20) { // Chạy 20 lần rồi dừng
+        if(count > 20) {
             clearInterval(loop);
             showModal("Con số may mắn: " + rand);
         }
     }, 80);
 }
 
-// ==================== GAME 2: BỐC THĂM (GRID VERSION) ====================
-$(document).ready(function() {
-    let giftList = getCookie("giftList");
-    if(!giftList) giftList = "Xe máy SH\niPhone 15 Pro\nVoucher 500k\nChúc bạn may mắn\nTai nghe Airpod\nBút bi cao cấp\nSổ tay";
-    $('#txtGiftList').val(giftList);
-    
-    // Tạo lưới quà ngay khi load trang
-    renderLuckyGrid();
-});
-
+// ==================== 5. LOGIC GAME 2: BỐC THĂM ====================
 function toggleSettings(id) {
     $('#' + id).slideToggle();
 }
@@ -92,26 +99,24 @@ function toggleSettings(id) {
 function saveGiftSettings() {
     let list = $('#txtGiftList').val();
     setCookie("giftList", list, 30);
-    renderLuckyGrid(); // Vẽ lại lưới sau khi lưu
+    renderLuckyGrid(); 
     alert("Đã cập nhật danh sách quà!");
     toggleSettings('box-settings');
 }
 
 function renderLuckyGrid() {
+    console.log("Đang tạo lưới quà..."); // Log kiểm tra
     let listStr = $('#txtGiftList').val();
-    // Lọc bỏ dòng trống
     let items = listStr.split('\n').filter(item => item.trim() !== "");
     
-    // Giới hạn tối đa 99 hộp
     if(items.length > 99) {
         items = items.slice(0, 99);
-        alert("Hệ thống giới hạn hiển thị tối đa 99 hộp quà!");
+        alert("Giới hạn tối đa 99 hộp quà!");
     }
 
     $('#gift-count-label').text(`Đang có ${items.length} hộp quà bí mật`);
+    
     let gridHtml = '';
-
-    // Tạo HTML cho từng hộp
     items.forEach((item, index) => {
         gridHtml += `
             <div class="lucky-item" id="box-${index}" onclick="openBox(${index})">
@@ -125,10 +130,8 @@ function renderLuckyGrid() {
 }
 
 function openBox(index) {
-    // Kiểm tra xem hộp đã mở chưa
     if ($(`#box-${index}`).hasClass('opened')) return;
 
-    // Lấy danh sách quà hiện tại từ input (để đảm bảo đồng bộ)
     let listStr = $('#txtGiftList').val();
     let items = listStr.split('\n').filter(item => item.trim() !== "");
 
@@ -137,58 +140,42 @@ function openBox(index) {
         return;
     }
 
-    // --- LOGIC CHỌN QUÀ NGẪU NHIÊN ---
-    // Khi bấm vào 1 hộp bất kỳ, hệ thống sẽ chọn ngẫu nhiên 1 món quà trong danh sách còn lại
-    // Điều này giúp người chơi không thể "soi" code để biết hộp nào chứa gì trước khi bấm.
+    // Chọn ngẫu nhiên quà
     let randomGiftIndex = Math.floor(Math.random() * items.length);
     let prizeName = items[randomGiftIndex];
 
-    // Hiệu ứng mở hộp
+    // Hiệu ứng mở
     let box = $(`#box-${index}`);
-    box.find('i').attr('class', 'fa-solid fa-box-open'); // Đổi icon thành hộp mở
-    box.addClass('opened'); // Thêm class đã mở (xám màu)
+    box.find('i').attr('class', 'fa-solid fa-box-open'); 
+    box.addClass('opened'); 
 
-    // Hiển thị kết quả
     showModal(prizeName);
 
-    // Xử lý nếu chọn "Loại bỏ quà sau khi trúng"
+    // Xử lý loại bỏ quà
     if ($('#chkRemoveGift').is(':checked')) {
-        // Xóa món quà vừa trúng khỏi danh sách text
         items.splice(randomGiftIndex, 1);
-        
-        // Cập nhật lại textarea và cookie
         let newList = items.join('\n');
         $('#txtGiftList').val(newList);
         setCookie("giftList", newList, 30);
-        
-        // Cập nhật lại số lượng hiển thị
         $('#gift-count-label').text(`Đang có ${items.length} hộp quà bí mật`);
     }
 }
 
 function resetLuckyGrid() {
-    if(confirm("Bạn có muốn sắp xếp lại các hộp quà không?")) {
+    if(confirm("Bạn có muốn làm mới các hộp quà không?")) {
         renderLuckyGrid();
     }
 }
 
-// ==================== GAME 3: VÒNG QUAY (CORE LOGIC) ====================
-// Logic Canvas được viết lại gọn hơn để chạy mượt mà
+// ==================== 6. LOGIC GAME 3: VÒNG QUAY ====================
 let segments = [];
 let colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
 let wheelCtx;
 let wheelCanvas;
 let isSpinning = false;
-let currentRotation = 0; // Góc quay hiện tại
+let currentRotation = 0;
 let spinSpeed = 0;
 let animationFrameId;
-
-$(document).ready(function() {
-    let wheelData = getCookie("wheelItems");
-    if(!wheelData) wheelData = "10k\n20k\n50k\n100k\nChúc may mắn\nThêm lượt";
-    $('#txtWheelItems').val(wheelData);
-    initWheelFromInput();
-});
 
 function initWheelFromInput() {
     let val = $('#txtWheelItems').val();
@@ -206,24 +193,21 @@ function initWheel() {
     wheelCanvas = document.getElementById('wheel');
     if(!wheelCanvas) return;
     wheelCtx = wheelCanvas.getContext('2d');
-    
-    // Resize cho đẹp trên mobile nếu cần (Code CSS đã xử lý phần hiển thị)
-    // Vẽ vòng quay tĩnh lần đầu
-    drawWheel(0);
+    drawWheel(currentRotation);
 }
 
 function drawWheel(rotationAngle) {
     if(!wheelCtx) return;
     let centerX = wheelCanvas.width / 2;
     let centerY = wheelCanvas.height / 2;
-    let radius = wheelCanvas.width / 2 - 10; // Chừa lề
+    let radius = wheelCanvas.width / 2 - 10;
     let arc = (2 * Math.PI) / segments.length;
 
     wheelCtx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
     
     wheelCtx.save();
     wheelCtx.translate(centerX, centerY);
-    wheelCtx.rotate(rotationAngle); // Xoay khung hình
+    wheelCtx.rotate(rotationAngle);
 
     segments.forEach((segment, i) => {
         let angle = i * arc;
@@ -234,11 +218,10 @@ function drawWheel(rotationAngle) {
         wheelCtx.lineTo(0, 0);
         wheelCtx.fill();
 
-        // Vẽ Text
         wheelCtx.save();
         wheelCtx.fillStyle = "white";
         wheelCtx.translate(Math.cos(angle + arc / 2) * (radius - 50), Math.sin(angle + arc / 2) * (radius - 50));
-        wheelCtx.rotate(angle + arc / 2 + Math.PI); // Xoay chữ hướng vào tâm
+        wheelCtx.rotate(angle + arc / 2 + Math.PI);
         wheelCtx.font = "bold 16px Arial";
         wheelCtx.fillText(segment.label, -wheelCtx.measureText(segment.label).width / 2, 5);
         wheelCtx.restore();
@@ -247,14 +230,11 @@ function drawWheel(rotationAngle) {
     wheelCtx.restore();
 }
 
-// Xử lý nút quay
 $('#spin-btn').click(function() {
     if(isSpinning) return;
     isSpinning = true;
-    
-    // Tốc độ quay ngẫu nhiên
-    spinSpeed = Math.random() * 0.2 + 0.3; // Tốc độ ban đầu (rad/frame)
-    let deceleration = 0.992; // Độ ma sát (càng gần 1 càng lâu dừng)
+    spinSpeed = Math.random() * 0.2 + 0.3;
+    let deceleration = 0.992;
     
     function animate() {
         if(spinSpeed < 0.002) {
@@ -263,7 +243,6 @@ $('#spin-btn').click(function() {
             calculateWinner();
             return;
         }
-        
         spinSpeed *= deceleration;
         currentRotation += spinSpeed;
         drawWheel(currentRotation);
@@ -274,20 +253,9 @@ $('#spin-btn').click(function() {
 
 function calculateWinner() {
     let arc = (2 * Math.PI) / segments.length;
-    // Tính góc hiện tại (đã normalize về 0-2PI)
-    // Do canvas xoay xuôi chiều kim đồng hồ, mà kim chỉ ở góc 270 độ (trên cùng - hoặc style CSS xoay)
-    // Logic đơn giản: Kim chỉ ở vị trí 12h (tương đương -PI/2 trong canvas).
-    // Chúng ta cần tính xem segment nào đang chạm vào góc đó.
-    
     let normalizedRotation = currentRotation % (2 * Math.PI);
-    
-    // Góc của kim chỉ (đang là 12h = 1.5 PI hoặc -0.5 PI)
-    // Vì ta xoay canvas, nên thực chất kim đứng yên, mảng segments xoay.
-    // Góc va chạm thực tế = (2PI - normalizedRotation) + offset của kim
-    
-    let pointerAngle = (3 * Math.PI / 2); // 270 độ
+    let pointerAngle = (3 * Math.PI / 2); 
     let relativeAngle = (pointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
-    
     let winningIndex = Math.floor(relativeAngle / arc);
     showModal("Kết quả: " + segments[winningIndex].label);
 }
