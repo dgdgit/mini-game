@@ -53,13 +53,16 @@
             <div class="game-card">
                 <h2><i class="fa-solid fa-box-open"></i> Bốc Thăm Trúng Thưởng</h2>
                 
-                <div class="lucky-box-container" onclick="playLuckyDraw()">
-                    <i class="fa-solid fa-gift lucky-icon"></i>
-                    <p>Nhấn vào hộp quà để bốc thăm</p>
-                </div>
-                
                 <div class="control-row">
+                    <p id="gift-count-label" style="margin-bottom: 10px; color: #666;">Đang có 0 phần quà</p>
+                </div>
+
+                <div id="lucky-grid" class="lucky-grid-container">
+                    </div>
+                
+                <div class="control-row" style="margin-top: 20px;">
                     <button class="btn-settings" onclick="toggleSettings('box-settings')"><i class="fa-solid fa-gear"></i> Cài đặt quà</button>
+                    <button class="btn-reset" onclick="resetLuckyGrid()"><i class="fa-solid fa-rotate-right"></i> Làm mới</button>
                 </div>
 
                 <div id="box-settings" class="settings-panel hidden">
@@ -68,7 +71,7 @@
                         <input type="checkbox" id="chkRemoveGift">
                         <label for="chkRemoveGift">Loại bỏ quà sau khi trúng</label>
                     </div>
-                    <button class="btn-save" onclick="saveGiftSettings()">Lưu Cài Đặt</button>
+                    <button class="btn-save" onclick="saveGiftSettings()">Lưu Cài Đặt & Tạo Hộp Quà</button>
                 </div>
             </div>
         </div>
