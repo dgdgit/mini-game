@@ -46,7 +46,7 @@ $(document).ready(function() {
 
     // --- GAME 3: Vòng Quay ---
     let wheelData = getCookie("wheelItems");
-    if(!wheelData) wheelData = "10k\n20k\n50k\n100k\nChúc may mắn\nThêm lượt";
+    if(!wheelData) wheelData = "Uống 100%\nUống 50%\nNhấp môi\nNgười bên trái 100%\nNgười bên phải 100%\nĐồng khởi";
     $('#txtWheelItems').val(wheelData);
     initWheelFromInput();
 });
