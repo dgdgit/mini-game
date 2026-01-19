@@ -44,7 +44,7 @@ $(document).ready(function() {
 
     // Game 3
     let wheelData = getCookie("wheelItems");
-    if(!wheelData) wheelData = "Xe máy\nÔ tô\nĐiện thoại\nChúc bạn may mắn";
+    if(!wheelData) wheelData = "Uống 100%\nUống 50%\nNhấp môi\nNgười bên trái 100%\nNgười bên phải 100%\nĐồng khởi";
     $('#txtWheelItems').val(wheelData);
     initWheelFromInput();
 
