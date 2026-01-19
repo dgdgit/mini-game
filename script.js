@@ -179,11 +179,12 @@ function calculateWinner() {
     showModal("Kết quả: " + segments[winningIndex].label);
 }
 
-// ==================== GAME 4: XÚC XẮC (LOGIC MỚI) ====================
+// ==================== GAME 4: XÚC XẮC (CẬP NHẬT TÍNH NĂNG ĐẾM LƯỢT) ====================
+let currentRollCount = 0; // Biến theo dõi số lần đổ
+
 function renderDices() {
     let count = parseInt($('#dice-count').val());
     let html = '';
-    // Tạo số lượng xúc xắc tương ứng
     for(let i = 0; i < count; i++) {
         html += `
         <div class="dice" id="dice-${i}">
@@ -196,61 +197,53 @@ function renderDices() {
         </div>`;
     }
     $('#dice-container').html(html);
-    $('#dice-total').removeClass('show');
+    
+    // Reset lại điểm hiển thị khi đổi số lượng, nhưng KHÔNG reset lượt đổ (để tránh ăn gian bằng cách đổi số lượng)
+    $('#dice-total').text('0').removeClass('highlight');
+}
+
+function resetDiceGame() {
+    if(confirm("Bạn muốn làm mới lượt đổ về 0?")) {
+        currentRollCount = 0;
+        $('#roll-count').text(currentRollCount);
+        $('#dice-total').text('0').removeClass('highlight');
+        renderDices(); // Vẽ lại xúc xắc về trạng thái ban đầu
+    }
 }
 
 function rollDice() {
     let count = parseInt($('#dice-count').val());
     let totalScore = 0;
-    $('#dice-total').removeClass('show');
+    $('#dice-total').removeClass('highlight');
 
-    // Mảng các góc xoay tương ứng với mặt 1-6
-    // 1: rotateX(0deg) rotateY(0deg)
-    // 2: rotateX(0deg) rotateY(180deg) (Mặt sau)
-    // 3: rotateX(0deg) rotateY(-90deg) (Mặt phải -> cần xoay trái để hiện)
-    // 4: rotateX(0deg) rotateY(90deg)  (Mặt trái -> cần xoay phải để hiện)
-    // 5: rotateX(-90deg) rotateY(0deg) (Mặt trên -> cần xoay xuống)
-    // 6: rotateX(90deg) rotateY(0deg)  (Mặt dưới -> cần xoay lên)
-    
-    // Logic xoay CSS chuẩn:
-    // 1 (Front): 0, 0
-    // 6 (Back): 180x, 0
-    // 2 (Left): 0, 90y
-    // 5 (Right): 0, -90y
-    // 3 (Top): -90x, 0
-    // 4 (Bottom): 90x, 0
-    
-    // Ta random kết quả trước, sau đó tính góc xoay để hiển thị mặt đó
-    // Để tạo hiệu ứng xoay nhiều vòng, ta cộng thêm (360 * số vòng) vào góc
-    
+    // Tăng số lượt đổ lên 1
+    currentRollCount++;
+    $('#roll-count').text(currentRollCount);
+
     $('.dice').each(function(index) {
         let dice = $(this);
-        let result = Math.floor(Math.random() * 6) + 1; // 1 đến 6
+        let result = Math.floor(Math.random() * 6) + 1;
         totalScore += result;
 
         let x = 0, y = 0;
-        let loops = 2; // Số vòng xoay tối thiểu
+        let loops = 2; 
         
-        // Tính góc xoay dựa trên kết quả
         switch(result) {
             case 1: x = 0; y = 0; break;
-            case 2: x = 0; y = 180; break; // Mặt sau
-            case 3: x = 0; y = -90; break; // Mặt phải
-            case 4: x = 0; y = 90; break;  // Mặt trái
-            case 5: x = -90; y = 0; break; // Mặt trên
-            case 6: x = 90; y = 0; break;  // Mặt dưới
+            case 2: x = 0; y = 180; break;
+            case 3: x = 0; y = -90; break;
+            case 4: x = 0; y = 90; break;
+            case 5: x = -90; y = 0; break;
+            case 6: x = 90; y = 0; break;
         }
 
-        // Thêm độ ngẫu nhiên cho vòng xoay để mỗi con xoay khác nhau chút
         let randX = 360 * (loops + Math.floor(Math.random() * 2)); 
         let randY = 360 * (loops + Math.floor(Math.random() * 2));
 
-        // Set style transform
         dice.css('transform', `rotateX(${x + randX}deg) rotateY(${y + randY}deg)`);
     });
 
-    // Hiển thị tổng điểm sau 1s (khi xoay xong)
     setTimeout(() => {
-        $('#dice-total').text(`Tổng điểm: ${totalScore}`).addClass('show');
+        $('#dice-total').text(totalScore).addClass('highlight');
     }, 1000);
 }
