@@ -114,12 +114,21 @@
                     </div>
                 </div>
 
-                <div class="dice-total-result" id="dice-total">Tổng điểm: 0</div>
+                <div class="dice-info-row">
+                    <div class="info-item">
+                        <span class="label">Tổng điểm:</span>
+                        <span class="value" id="dice-total">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Lượt đổ:</span>
+                        <span class="value counter" id="roll-count">0</span>
+                    </div>
+                </div>
 
-                <div class="settings-area" style="margin-top: 30px;">
+                <div class="settings-area" style="margin-top: 20px;">
                     <div class="input-group">
-                        <label>Số lượng xúc xắc (1-6):</label>
-                        <select id="dice-count" onchange="renderDices()" style="padding: 10px; border-radius: 8px; border: 2px solid #ddd; font-weight: bold; width: 100px; text-align: center;">
+                        <label>Số lượng:</label>
+                        <select id="dice-count" onchange="renderDices()" style="padding: 8px; border-radius: 8px; border: 2px solid #ddd; font-weight: bold; width: 80px; text-align: center;">
                             <option value="1" selected>1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -128,6 +137,9 @@
                             <option value="6">6</option>
                         </select>
                     </div>
+                    <button class="btn-reset" onclick="resetDiceGame()" style="height: 42px; margin-top: 23px;">
+                        <i class="fa-solid fa-rotate-right"></i> Làm mới
+                    </button>
                 </div>
 
                 <button class="btn-play pulse-animation" onclick="rollDice()">ĐỔ XÚC XẮC</button>
