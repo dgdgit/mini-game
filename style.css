@@ -1,16 +1,14 @@
 :root {
-    /* Bảng màu theo thương hiệu DGD */
-    --primary-color: #F26522;  /* Cam chủ đạo */
-    --secondary-color: #002D5B; /* Xanh đen đậm */
-    --accent-color: #ff8246;   /* Cam sáng (cho hover) */
+    --primary-color: #F26522;
+    --secondary-color: #002D5B;
+    --accent-color: #ff8246;
     --text-color: #333333;
     --white: #ffffff;
-    --bg-light: #fff8f5;       /* Màu nền phụ rất nhạt hơi ám cam */
+    --bg-light: #fff8f5;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
-    /* Đổi nền sang trắng hoàn toàn để tệp với nền logo */
     background-color: var(--white);
     background-image: linear-gradient(180deg, #ffffff 0%, #fffbf8 100%);
     margin: 0;
@@ -38,21 +36,20 @@ header {
 }
 
 .dgd-logo {
-    height: 70px; /* Tăng kích thước logo lên chút cho rõ */
+    height: 70px;
     width: auto;
     object-fit: contain;
-    /* Không cần đổ bóng nữa vì nền đã trắng, nhìn sẽ liền mạch hơn */
 }
 
 header h1 {
-    color: var(--secondary-color); /* Tiêu đề màu Xanh đen */
+    color: var(--secondary-color);
     font-size: 2.2rem;
     margin-bottom: 5px;
     font-weight: 800;
     text-transform: uppercase;
 }
 header h1 i {
-    color: var(--primary-color); /* Icon bên cạnh tiêu đề màu Cam */
+    color: var(--primary-color);
 }
 
 header p {
@@ -66,10 +63,11 @@ header p {
     justify-content: center;
     gap: 15px;
     margin-bottom: 30px;
+    flex-wrap: wrap; /* Cho phép xuống dòng trên mobile */
 }
 
 .tab-btn {
-    padding: 12px 30px;
+    padding: 12px 25px;
     border: 2px solid #eee;
     border-radius: 50px;
     background: var(--white);
@@ -78,6 +76,9 @@ header p {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .tab-btn:hover {
@@ -86,7 +87,6 @@ header p {
 }
 
 .tab-btn.active {
-    /* Tab đang chọn màu Cam */
     background: linear-gradient(90deg, var(--primary-color), #ff8e4f);
     color: var(--white);
     border-color: transparent;
@@ -99,7 +99,6 @@ header p {
     background: var(--white);
     border-radius: 20px;
     padding: 30px;
-    /* Đổ bóng nhẹ màu cam để nổi bật trên nền trắng */
     box-shadow: 0 10px 30px rgba(0, 45, 91, 0.08); 
     text-align: center;
     min-height: 400px;
@@ -121,7 +120,7 @@ header p {
 .result-box {
     font-size: 6rem;
     font-weight: 800;
-    color: var(--primary-color); /* Số kết quả màu Cam */
+    color: var(--primary-color);
     margin: 20px 0;
     font-family: monospace;
 }
@@ -172,6 +171,7 @@ button {
     font-weight: bold;
     box-shadow: 0 5px 15px rgba(242, 101, 34, 0.4);
     transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 15px;
 }
 
 .btn-play:hover {
@@ -181,7 +181,7 @@ button {
 
 .btn-play:active { transform: scale(0.98); }
 
-/* --- GAME 2: LUCKY BOX (LƯỚI QUÀ) --- */
+/* --- GAME 2: LUCKY BOX --- */
 .lucky-grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
@@ -196,7 +196,7 @@ button {
 
 .lucky-item {
     background: var(--white);
-    border: 2px solid var(--primary-color); /* Viền màu Cam */
+    border: 2px solid var(--primary-color);
     border-radius: 12px;
     aspect-ratio: 1/1;
     display: flex;
@@ -210,7 +210,7 @@ button {
 
 .lucky-item i {
     font-size: 2.2rem;
-    color: var(--primary-color); /* Icon hộp quà màu Cam */
+    color: var(--primary-color);
     transition: transform 0.3s;
     margin-bottom: 5px;
 }
@@ -229,10 +229,9 @@ button {
 
 .lucky-item:hover i, 
 .lucky-item:hover span {
-    color: var(--white); /* Đổi màu chữ/icon sang trắng khi hover */
+    color: var(--white);
 }
 
-/* Trạng thái đã mở */
 .lucky-item.opened {
     background: #f0f0f0;
     border-color: #ccc;
@@ -243,181 +242,102 @@ button {
 .lucky-item.opened i { color: #999; }
 .lucky-item.opened span { color: #999; }
 
-
-/* Các nút cài đặt nhỏ */
 .control-row { margin-top: 20px; }
-
-.btn-settings { 
-    background: var(--secondary-color); 
-    color: white; 
-    border:none; 
-    padding: 10px 20px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    font-weight: bold;
-}
-.btn-settings:hover { background: #0b3d75; }
-
-.btn-reset {
-    background: #fff;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    padding: 8px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-left: 10px;
-    transition: 0.3s;
-}
-.btn-reset:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-/* Panel Cài đặt */
-.settings-panel {
-    margin-top: 20px;
-    text-align: left;
-    background: #fdfdfd;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #eee;
-}
+.btn-settings { background: var(--secondary-color); color: white; border:none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;}
+.btn-reset { background: #fff; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-left: 10px; }
+.settings-panel { margin-top: 20px; text-align: left; background: #fdfdfd; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
 .settings-panel.hidden { display: none; }
-
-textarea {
-    width: 100%;
-    height: 120px;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-family: inherit;
-    resize: vertical;
-}
-textarea:focus { outline: 1px solid var(--primary-color); }
-
+textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; }
 .checkbox-wrapper { margin-bottom: 15px; }
-
-.btn-save { 
-    background: #28a745; 
-    color: white; 
-    border:none; 
-    padding: 12px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    width: 100%;
-    font-weight: bold;
-    font-size: 1rem;
-}
-.btn-save:hover { background: #218838; }
+.btn-save { background: #28a745; color: white; border:none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
 
 /* --- GAME 3: WHEEL --- */
-.wheel-layout {
+.wheel-layout { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; align-items: flex-start; }
+.wheel-container { position: relative; width: 400px; height: 400px; }
+.pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 50px; color: var(--secondary-color); filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+#spin-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 70px; border-radius: 50%; background: var(--white); border: 5px solid var(--primary-color); font-weight: bold; color: var(--primary-color); cursor: pointer; z-index: 5; font-size: 14px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+.wheel-controls { width: 100%; max-width: 350px; text-align: left; }
+.wheel-controls h3 { color: var(--secondary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; display: inline-block; }
+
+/* --- GAME 4: DICE 3D --- */
+.dice-wrapper {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 40px;
-    align-items: flex-start;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    min-height: 200px;
+    perspective: 1000px; /* Tạo chiều sâu 3D */
+    margin: 20px 0;
 }
-.wheel-container {
+
+.dice {
+    width: 80px;
+    height: 80px;
     position: relative;
-    width: 400px;
-    height: 400px;
+    transform-style: preserve-3d;
+    transition: transform 1s ease-out; /* Hiệu ứng xoay mượt */
 }
-.pointer {
+
+.dice-face {
     position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    font-size: 50px;
-    color: var(--secondary-color); /* Kim chỉ màu Xanh đen */
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+    width: 80px;
+    height: 80px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
 }
-#spin-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
+
+/* Tạo các dấu chấm trên mặt xúc xắc bằng CSS */
+.dice-face::before {
+    content: '';
+    display: block;
+    background-color: #333;
     border-radius: 50%;
-    background: var(--white);
-    border: 5px solid var(--primary-color); /* Viền nút quay màu Cam */
+}
+
+/* Các mặt của xúc xắc */
+.front  { transform: translateZ(40px); }
+.back   { transform: rotateY(180deg) translateZ(40px); }
+.right  { transform: rotateY(90deg) translateZ(40px); }
+.left   { transform: rotateY(-90deg) translateZ(40px); }
+.top    { transform: rotateX(90deg) translateZ(40px); }
+.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+/* Chấm điểm cho từng mặt */
+.front::before { width: 16px; height: 16px; background: #e91e63; } /* Mặt 1 chấm đỏ */
+.back::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px -18px 0 #333, -18px 18px 0 #333, 18px 18px 0 #333, -18px 0 0 #333, 18px 0 0 #333; } /* 6 chấm */
+.right::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333, 0 0 0 #333, 18px -18px 0 #333, -18px 18px 0 #333; } /* 5 chấm */
+.left::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333; } /* 2 chấm */
+.top::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333, 0 0 0 #333; } /* 3 chấm */
+.bottom::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333, -18px 18px 0 #333, 18px -18px 0 #333; } /* 4 chấm */
+
+.dice-total-result {
+    font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary-color);
-    cursor: pointer;
-    z-index: 5;
-    font-size: 14px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-#spin-btn:hover {
-    background: var(--primary-color);
-    color: var(--white);
-}
-
-.wheel-controls {
-    width: 100%;
-    max-width: 350px;
-    text-align: left;
-}
-.wheel-controls h3 {
     color: var(--secondary-color);
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 10px;
-    display: inline-block;
+    margin-top: 15px;
+    opacity: 0;
+    transition: opacity 0.5s;
 }
+.dice-total-result.show { opacity: 1; }
 
-/* --- MODAL (POPUP) --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 45, 91, 0.8); /* Nền tối xanh đen */
-    backdrop-filter: blur(4px);
-}
-.modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 40px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 450px;
-    text-align: center;
-    position: relative;
-    animation: slideDown 0.4s;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    border-top: 10px solid var(--primary-color);
-}
-.close-modal {
-    position: absolute;
-    top: 10px; right: 20px;
-    font-size: 30px;
-    cursor: pointer;
-    color: #999;
-}
-.close-modal:hover { color: var(--primary-color); }
-
+/* --- MODAL --- */
+.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 45, 91, 0.8); backdrop-filter: blur(4px); }
+.modal-content { background-color: #fff; margin: 15% auto; padding: 40px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; position: relative; animation: slideDown 0.4s; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-top: 10px solid var(--primary-color); }
+.close-modal { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: #999; }
 .congrats-icon { font-size: 60px; color: #FFD700; margin-bottom: 15px; }
 .modal-content h3 { color: var(--primary-color); font-size: 2rem; margin: 0; }
 #modal-text { font-size: 24px; font-weight: bold; color: var(--secondary-color); margin-top: 10px;}
-
-@keyframes slideDown {
-    from {top: -100px; opacity: 0;}
-    to {top: 0; opacity: 1;}
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(242, 101, 34, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(242, 101, 34, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(242, 101, 34, 0); }
-}
+@keyframes slideDown { from {top: -100px; opacity: 0;} to {top: 0; opacity: 1;} }
+@keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(242, 101, 34, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(242, 101, 34, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(242, 101, 34, 0); } }
 .pulse-animation { animation: pulse 2s infinite; }
 
-/* Responsive Mobile */
+/* Responsive */
 @media (max-width: 768px) {
     .dgd-logo { height: 50px; }
     .wheel-layout { flex-direction: column; align-items: center; }
@@ -427,4 +347,12 @@ textarea:focus { outline: 1px solid var(--primary-color); }
     .game-card { padding: 15px; }
     .tabs-nav { gap: 5px; }
     .tab-btn { padding: 8px 15px; font-size: 0.9rem; }
+    .dice { width: 60px; height: 60px; } /* Xúc xắc nhỏ hơn trên mobile */
+    .dice-face { width: 60px; height: 60px; }
+    .front { transform: translateZ(30px); }
+    .back { transform: rotateY(180deg) translateZ(30px); }
+    .right { transform: rotateY(90deg) translateZ(30px); }
+    .left { transform: rotateY(-90deg) translateZ(30px); }
+    .top { transform: rotateX(90deg) translateZ(30px); }
+    .bottom { transform: rotateX(-90deg) translateZ(30px); }
 }
