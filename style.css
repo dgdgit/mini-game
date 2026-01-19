@@ -259,7 +259,7 @@ textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; borde
 .wheel-controls { width: 100%; max-width: 350px; text-align: left; }
 .wheel-controls h3 { color: var(--secondary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; display: inline-block; }
 
-/* --- GAME 4: DICE 3D --- */
+/* --- GAME 4: DICE 3D (FIX LỖI CHẤM ĐIỂM) --- */
 .dice-wrapper {
     display: flex;
     justify-content: center;
@@ -267,7 +267,7 @@ textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; borde
     gap: 30px;
     flex-wrap: wrap;
     min-height: 200px;
-    perspective: 1000px; /* Tạo chiều sâu 3D */
+    perspective: 1000px;
     margin: 20px 0;
 }
 
@@ -276,7 +276,7 @@ textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; borde
     height: 80px;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 1s ease-out; /* Hiệu ứng xoay mượt */
+    transition: transform 1s ease-out;
 }
 
 .dice-face {
@@ -284,23 +284,23 @@ textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; borde
     width: 80px;
     height: 80px;
     background: white;
-    border: 2px solid #ddd;
+    border: 2px solid #ccc;
     border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    box-sizing: border-box; /* Quan trọng: Fix lỗi mặt bị lệch */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
 
-/* Tạo các dấu chấm trên mặt xúc xắc bằng CSS */
+/* Tạo hình dáng chung cho các chấm */
 .dice-face::before {
     content: '';
     display: block;
-    background-color: #333;
     border-radius: 50%;
 }
 
-/* Các mặt của xúc xắc */
+/* Định vị các mặt trong không gian 3D */
 .front  { transform: translateZ(40px); }
 .back   { transform: rotateY(180deg) translateZ(40px); }
 .right  { transform: rotateY(90deg) translateZ(40px); }
@@ -308,13 +308,53 @@ textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; borde
 .top    { transform: rotateX(90deg) translateZ(40px); }
 .bottom { transform: rotateX(-90deg) translateZ(40px); }
 
-/* Chấm điểm cho từng mặt */
-.front::before { width: 16px; height: 16px; background: #e91e63; } /* Mặt 1 chấm đỏ */
-.back::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px -18px 0 #333, -18px 18px 0 #333, 18px 18px 0 #333, -18px 0 0 #333, 18px 0 0 #333; } /* 6 chấm */
-.right::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333, 0 0 0 #333, 18px -18px 0 #333, -18px 18px 0 #333; } /* 5 chấm */
-.left::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333; } /* 2 chấm */
-.top::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333, 0 0 0 #333; } /* 3 chấm */
-.bottom::before { width: 12px; height: 12px; box-shadow: -18px -18px 0 #333, 18px 18px 0 #333, -18px 18px 0 #333, 18px -18px 0 #333; } /* 4 chấm */
+/* --- VẼ CHẤM (Đã sửa lại logic) --- */
+/* Quy ước theo Script: 
+   1=Front, 2=Back, 3=Right, 4=Left, 5=Top, 6=Bottom 
+*/
+
+/* Mặt 1: 1 chấm đỏ ở giữa */
+.front::before { 
+    width: 20px; height: 20px; 
+    background: #e91e63; 
+    box-shadow: none; 
+}
+
+/* Mặt 2: 2 chấm chéo (Ẩn chấm giữa, dùng bóng đổ vẽ 2 chấm) */
+.back::before { 
+    width: 14px; height: 14px; 
+    background: transparent; 
+    box-shadow: -20px -20px 0 #333, 20px 20px 0 #333; 
+}
+
+/* Mặt 3: 3 chấm chéo (Hiện chấm giữa + 2 bóng đổ) */
+.right::before { 
+    width: 14px; height: 14px; 
+    background: #333; 
+    box-shadow: -20px -20px 0 #333, 20px 20px 0 #333; 
+}
+
+/* Mặt 4: 4 chấm góc (Ẩn chấm giữa + 4 bóng đổ) */
+.left::before { 
+    width: 14px; height: 14px; 
+    background: transparent; 
+    box-shadow: -20px -20px 0 #333, 20px -20px 0 #333, -20px 20px 0 #333, 20px 20px 0 #333; 
+}
+
+/* Mặt 5: 5 chấm (Hiện chấm giữa + 4 bóng đổ) */
+.top::before { 
+    width: 14px; height: 14px; 
+    background: #333; 
+    box-shadow: -20px -20px 0 #333, 20px -20px 0 #333, -20px 20px 0 #333, 20px 20px 0 #333; 
+}
+
+/* Mặt 6: 6 chấm (Ẩn chấm giữa + 6 bóng đổ dọc) */
+.bottom::before { 
+    width: 14px; height: 14px; 
+    background: transparent; 
+    box-shadow: -20px -20px 0 #333, -20px 0 0 #333, -20px 20px 0 #333, 
+                 20px -20px 0 #333, 20px 0 0 #333, 20px 20px 0 #333; 
+}
 
 .dice-total-result {
     font-size: 1.5rem;
@@ -326,33 +366,29 @@ textarea { width: 100%; height: 120px; padding: 12px; margin-bottom: 15px; borde
 }
 .dice-total-result.show { opacity: 1; }
 
-/* --- MODAL --- */
-.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 45, 91, 0.8); backdrop-filter: blur(4px); }
-.modal-content { background-color: #fff; margin: 15% auto; padding: 40px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; position: relative; animation: slideDown 0.4s; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-top: 10px solid var(--primary-color); }
-.close-modal { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; color: #999; }
-.congrats-icon { font-size: 60px; color: #FFD700; margin-bottom: 15px; }
-.modal-content h3 { color: var(--primary-color); font-size: 2rem; margin: 0; }
-#modal-text { font-size: 24px; font-weight: bold; color: var(--secondary-color); margin-top: 10px;}
-@keyframes slideDown { from {top: -100px; opacity: 0;} to {top: 0; opacity: 1;} }
-@keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(242, 101, 34, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(242, 101, 34, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(242, 101, 34, 0); } }
-.pulse-animation { animation: pulse 2s infinite; }
-
-/* Responsive */
+/* Responsive Mobile */
 @media (max-width: 768px) {
-    .dgd-logo { height: 50px; }
-    .wheel-layout { flex-direction: column; align-items: center; }
-    .wheel-controls { width: 100%; margin-top: 20px; }
-    .wheel-container { width: 300px; height: 300px; }
-    #wheel { width: 300px; height: 300px; }
-    .game-card { padding: 15px; }
-    .tabs-nav { gap: 5px; }
-    .tab-btn { padding: 8px 15px; font-size: 0.9rem; }
-    .dice { width: 60px; height: 60px; } /* Xúc xắc nhỏ hơn trên mobile */
+    .dice { width: 60px; height: 60px; }
     .dice-face { width: 60px; height: 60px; }
+    /* Giảm khoảng cách translateZ còn 30px */
     .front { transform: translateZ(30px); }
     .back { transform: rotateY(180deg) translateZ(30px); }
     .right { transform: rotateY(90deg) translateZ(30px); }
     .left { transform: rotateY(-90deg) translateZ(30px); }
     .top { transform: rotateX(90deg) translateZ(30px); }
     .bottom { transform: rotateX(-90deg) translateZ(30px); }
+    
+    /* Thu nhỏ kích thước chấm và khoảng cách bóng đổ */
+    .front::before { width: 14px; height: 14px; }
+    
+    .back::before, .right::before, .left::before, .top::before, .bottom::before {
+        width: 10px; height: 10px;
+    }
+    
+    /* Cập nhật lại tọa độ bóng đổ cho kích thước nhỏ */
+    .back::before { box-shadow: -14px -14px 0 #333, 14px 14px 0 #333; }
+    .right::before { box-shadow: -14px -14px 0 #333, 14px 14px 0 #333; }
+    .left::before { box-shadow: -14px -14px 0 #333, 14px -14px 0 #333, -14px 14px 0 #333, 14px 14px 0 #333; }
+    .top::before { box-shadow: -14px -14px 0 #333, 14px -14px 0 #333, -14px 14px 0 #333, 14px 14px 0 #333; }
+    .bottom::before { box-shadow: -14px -14px 0 #333, -14px 0 0 #333, -14px 14px 0 #333, 14px -14px 0 #333, 14px 0 0 #333, 14px 14px 0 #333; }
 }
